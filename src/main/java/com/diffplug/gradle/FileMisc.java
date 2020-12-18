@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2020 DiffPlug
+ * Copyright (C) 2015-2021 DiffPlug
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,14 +155,20 @@ public class FileMisc {
 
 	/** Quotes the given input string iff it contains whitespace. */
 	public static String quote(String input) {
-		if (input.contains(" ")) {
+		if (input.contains(" ") && !isQuoted(input)) {
 			return "\"" + input + "\"";
 		} else {
 			return input;
 		}
 	}
 
-	/** Quotes the absolute path of the given file iff it contains whitespace. */
+	/** Checks whether the input string is already quoted (in the sense of {@link #quote(String)}) */
+	public static boolean isQuoted(String input) {
+		String trimmed = input.trim();
+		return trimmed.startsWith("\"") && trimmed.endsWith("\"");
+	}
+
+	/** Quotes the absolute path of the given file if it contains whitespace. */
 	public static String quote(File input) {
 		return quote(input.getAbsolutePath());
 	}

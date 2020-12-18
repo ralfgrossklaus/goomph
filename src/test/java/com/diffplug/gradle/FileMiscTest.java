@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 DiffPlug
+ * Copyright (C) 2016-2021 DiffPlug
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,5 +71,35 @@ public class FileMiscTest {
 		Assert.assertEquals(false, a.exists());
 		Assert.assertEquals(false, b.exists());
 		Assert.assertEquals(true, folder.getRoot().exists());
+	}
+
+	@Test
+	public void testQuoteString() {
+		// Strings without spaces should not be quoted
+		String input = "TestString";
+		Assert.assertEquals(input, FileMisc.quote(input));
+		input = "\"TestString\"";
+		Assert.assertEquals(input, FileMisc.quote(input));
+		// Perform checks with Strings that contain spaces
+		input = "\"This is a quoted string\"";
+		Assert.assertEquals(input, FileMisc.quote(input));
+		input = "This counts as a unquoted string\"";
+		Assert.assertEquals("\"" + input + "\"", FileMisc.quote(input));
+		input = "\"This counts as a unquoted string";
+		Assert.assertEquals("\"" + input + "\"", FileMisc.quote(input));
+		input = "This counts as a unquoted string";
+		Assert.assertEquals("\"" + input + "\"", FileMisc.quote(input));
+		input = "'This counts as a unquoted string'";
+		Assert.assertEquals("\"" + input + "\"", FileMisc.quote(input));
+	}
+
+	@Test
+	public void testIsQuoted() {
+		// Only fully double quotation counts as true
+		Assert.assertTrue(FileMisc.isQuoted("\"This is a quoted string\""));
+		Assert.assertFalse(FileMisc.isQuoted("This counts as a unquoted string\""));
+		Assert.assertFalse(FileMisc.isQuoted("\"This counts as a unquoted string"));
+		Assert.assertFalse(FileMisc.isQuoted("This counts as a unquoted string"));
+		Assert.assertFalse(FileMisc.isQuoted("'This counts as a unquoted string'"));
 	}
 }
